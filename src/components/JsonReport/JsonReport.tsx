@@ -9,6 +9,7 @@ interface JsonReportProps {
   data: JsonValue;
   label?: string;
   level?: number;
+  isRoot?: boolean;
 }
 
 const cardStyle = {
@@ -19,7 +20,7 @@ const cardStyle = {
   marginBottom: 12,
   backgroundColor: "#fff",
   fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-  width: "100%", // full width; no margin or padding shifting left edge
+  width: "100%",
   boxSizing: "border-box",
   overflow: "hidden",
 };
@@ -29,28 +30,70 @@ const getBorderColor = (level: number) => {
   return colors[Math.min(level, colors.length - 1)];
 };
 
-const JsonReport: React.FC<JsonReportProps> = ({ data, label, level = 0 }) => {
+const JsonReport: React.FC<JsonReportProps> = ({
+  data,
+  label,
+  level = 0,
+  isRoot = true, // default is root
+}) => {
   if (Array.isArray(data)) {
-    return (
-      <div
-        style={{
-          ...cardStyle,
-          borderLeft: `4px solid ${getBorderColor(level)}`,
-          boxSizing: "border-box",
-        }}
-      >
-        <Accordion title={label ?? `Array (${data.length})`}>
+    if (isRoot) {
+      // Top level array: always expanded
+      return (
+        <div
+          style={{
+            ...cardStyle,
+            borderLeft: `4px solid ${getBorderColor(level)}`,
+            boxSizing: "border-box",
+          }}
+        >
+          {label && (
+            <div
+              style={{
+                fontWeight: "700",
+                color: "#2c3e50",
+                marginBottom: 12,
+                fontSize: 16,
+              }}
+            >
+              {formatKey(label)}
+            </div>
+          )}
           {data.map((item, idx) => (
             <JsonReport
               key={idx}
               data={item}
               label={`Item ${idx + 1}`}
               level={level + 1}
+              isRoot={false}
             />
           ))}
-        </Accordion>
-      </div>
-    );
+        </div>
+      );
+    } else {
+      // Nested array: collapsible
+      return (
+        <div
+          style={{
+            ...cardStyle,
+            borderLeft: `4px solid ${getBorderColor(level)}`,
+            boxSizing: "border-box",
+          }}
+        >
+          <Accordion title={formatKey(label ?? `Array (${data.length})`)}>
+            {data.map((item, idx) => (
+              <JsonReport
+                key={idx}
+                data={item}
+                label={`Item ${idx + 1}`}
+                level={level + 1}
+                isRoot={false}
+              />
+            ))}
+          </Accordion>
+        </div>
+      );
+    }
   }
 
   if (typeof data !== "object" || data === null) {
@@ -87,26 +130,8 @@ const JsonReport: React.FC<JsonReportProps> = ({ data, label, level = 0 }) => {
   );
   const arrayEntries = entries.filter(([, v]) => Array.isArray(v));
 
-  return (
-    <div
-      style={{
-        ...cardStyle,
-        borderLeft: `4px solid ${getBorderColor(level)}`,
-        boxSizing: "border-box",
-      }}
-    >
-      {label && (
-        <div
-          style={{
-            fontWeight: "700",
-            color: "#2c3e50",
-            marginBottom: 12,
-            fontSize: 16,
-          }}
-        >
-          {formatKey(label)}
-        </div>
-      )}
+  const content = (
+    <>
       {/* Primitives in flex-wrap row */}
       <div
         style={{
@@ -114,7 +139,7 @@ const JsonReport: React.FC<JsonReportProps> = ({ data, label, level = 0 }) => {
           flexWrap: "wrap",
           gap: 24,
           marginBottom: 12,
-          justifyContent: "flex-start", // align items to left
+          justifyContent: "flex-start",
         }}
       >
         {primitiveEntries.map(([key, value]) => (
@@ -124,7 +149,6 @@ const JsonReport: React.FC<JsonReportProps> = ({ data, label, level = 0 }) => {
               minWidth: 140,
               color: "#34495e",
               fontWeight: 600,
-              flex: "0 0 auto", // do not grow or shrink, keep minimal width
               display: "inline-flex",
               gap: 4,
             }}
@@ -141,14 +165,66 @@ const JsonReport: React.FC<JsonReportProps> = ({ data, label, level = 0 }) => {
           </div>
         ))}
       </div>
-      {/* Objects */}
+      {/* Nested objects */}
       {objectEntries.map(([key, value]) => (
-        <JsonReport key={key} data={value} label={key} level={level + 1} />
+        <JsonReport
+          key={key}
+          data={value}
+          label={key}
+          level={level + 1}
+          isRoot={false}
+        />
       ))}
       {/* Arrays */}
       {arrayEntries.map(([key, value]) => (
-        <JsonReport key={key} data={value} label={key} level={level + 1} />
+        <JsonReport
+          key={key}
+          data={value}
+          label={key}
+          level={level + 1}
+          isRoot={false}
+        />
       ))}
+    </>
+  );
+
+  if (isRoot) {
+    // Top-level object: always expanded
+    return (
+      <div
+        style={{
+          ...cardStyle,
+          borderLeft: `4px solid ${getBorderColor(level)}`,
+          boxSizing: "border-box",
+        }}
+      >
+        {label && (
+          <div
+            style={{
+              fontWeight: "700",
+              color: "#2c3e50",
+              marginBottom: 12,
+              fontSize: 16,
+            }}
+          >
+            {formatKey(label)}
+          </div>
+        )}
+        {content}
+      </div>
+    );
+  }
+
+  // Nested objects: collapsible
+  return (
+    <div
+      style={{
+        ...cardStyle,
+        borderLeft: `4px solid ${getBorderColor(level)}`,
+        boxSizing: "border-box",
+      }}
+    >
+      <Accordion title={formatKey(label ?? "Object")}>{content}</Accordion>
     </div>
   );
 };

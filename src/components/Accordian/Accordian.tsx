@@ -11,7 +11,7 @@ export const Accordion: React.FC<AccordionProps> = ({ title, children }) => {
   return (
     <div style={{ marginBottom: 12 }}>
       <button
-        onClick={() => setOpen((o) => !o)}
+        onClick={() => setOpen((prev) => !prev)}
         style={{
           background: "none",
           border: "none",
@@ -22,10 +22,9 @@ export const Accordion: React.FC<AccordionProps> = ({ title, children }) => {
           display: "flex",
           alignItems: "center",
           gap: 6,
-          userSelect: "none",
           padding: 0,
           marginBottom: 8,
-          width: "100%", // full width to align left
+          width: "100%",
           textAlign: "left",
         }}
         aria-expanded={open}
