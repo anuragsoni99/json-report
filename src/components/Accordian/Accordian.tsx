@@ -1,0 +1,47 @@
+import { useState } from "react";
+import { formatKey } from "../../utils";
+
+interface AccordionProps {
+  title: string;
+  children: React.ReactNode;
+}
+
+export const Accordion: React.FC<AccordionProps> = ({ title, children }) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <div style={{ marginBottom: 12 }}>
+      <button
+        onClick={() => setOpen((o) => !o)}
+        style={{
+          background: "none",
+          border: "none",
+          cursor: "pointer",
+          fontSize: 16,
+          fontWeight: "bold",
+          color: "#2c3e50",
+          display: "flex",
+          alignItems: "center",
+          gap: 6,
+          userSelect: "none",
+          padding: 0,
+          marginBottom: 8,
+          width: "100%", // full width to align left
+          textAlign: "left",
+        }}
+        aria-expanded={open}
+      >
+        <span
+          style={{
+            display: "inline-block",
+            transform: open ? "rotate(90deg)" : "rotate(0deg)",
+            transition: "transform 0.3s ease",
+          }}
+        >
+          ▶
+        </span>
+        {formatKey(title)}
+      </button>
+      {open && <div style={{ marginTop: 8 }}>{children}</div>}
+    </div>
+  );
+};
