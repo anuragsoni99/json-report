@@ -3,7 +3,6 @@ import JsonReport from "./components/JsonReport/JsonReport";
 function App() {
   return (
     <div className="App">
-      some changes
       <JsonReport
         data={{
           company: "TechCorp",
