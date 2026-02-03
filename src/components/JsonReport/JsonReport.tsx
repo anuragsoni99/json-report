@@ -47,7 +47,6 @@ const JsonReport: React.FC<JsonReportProps> = ({
             boxSizing: "border-box",
           }}
         >
-          Feature Branch Changes
           {label && (
             <div
               style={{
