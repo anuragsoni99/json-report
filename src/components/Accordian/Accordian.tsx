@@ -10,7 +10,6 @@ export const Accordion: React.FC<AccordionProps> = ({ title, children }) => {
   const [open, setOpen] = useState(false);
   return (
     <div style={{ marginBottom: 12 }}>
-      2nd Feature Branch Changes
       <button
         onClick={() => setOpen((prev) => !prev)}
         style={{
