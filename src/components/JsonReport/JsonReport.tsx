@@ -38,7 +38,6 @@ const JsonReport: React.FC<JsonReportProps> = ({
 }) => {
   if (Array.isArray(data)) {
     if (isRoot) {
-      // Top level array: always expanded
       return (
         <div
           style={{
