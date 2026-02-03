@@ -1,5 +1,12 @@
 # json-report
 
+## 0.1.3
+
+### Patch Changes
+
+- 25fdf93: remove text
+- 17a5d4a: remove comment
+
 ## 0.1.2
 
 ### Patch Changes
