@@ -3,7 +3,6 @@ import JsonReport from "./components/JsonReport/JsonReport";
 function App() {
   return (
     <div className="App">
-      Added Comment
       <JsonReport
         data={{
           company: "TechCorp",
