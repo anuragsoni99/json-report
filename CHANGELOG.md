@@ -1,5 +1,16 @@
 # json-report
 
+## 1.0.0
+
+### Major Changes
+
+- major release
+
+### Patch Changes
+
+- 53f0003: added comment in json
+- a68ec93: added comment
+
 ## 0.1.3
 
 ### Patch Changes
