@@ -46,7 +46,6 @@ const JsonReport: React.FC<JsonReportProps> = ({
             boxSizing: "border-box",
           }}
         >
-          json report comment
           {label && (
             <div
               style={{
